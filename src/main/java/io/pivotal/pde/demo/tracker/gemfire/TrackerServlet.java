@@ -10,8 +10,6 @@ import com.vaadin.server.ServiceDestroyEvent;
 import com.vaadin.server.ServiceDestroyListener;
 import com.vaadin.server.VaadinServlet;
 
-import hello.VaadinUI;
-
 @WebServlet(urlPatterns = "/*")
 @VaadinServletConfiguration(ui = TrackerUI.class, productionMode = false)
 public class TrackerServlet extends VaadinServlet implements ServiceDestroyListener {
