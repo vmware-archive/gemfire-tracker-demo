@@ -1,12 +1,11 @@
 package hello;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.TextField;
@@ -22,8 +21,8 @@ import com.vaadin.ui.themes.ValoTheme;
  * forms - less code, better UX. See e.g. AbstractForm in Virin
  * (https://vaadin.com/addon/viritin).
  */
-@SpringComponent
-@UIScope
+
+@Component
 public class CustomerEditor extends VerticalLayout {
 
 	private final CustomerRepository repository;
@@ -36,6 +35,7 @@ public class CustomerEditor extends VerticalLayout {
 	/* Fields to edit properties in Customer entity */
 	TextField firstName = new TextField("First name");
 	TextField lastName = new TextField("Last name");
+	TextField id = new TextField("ID");
 
 	/* Action buttons */
 	Button save = new Button("Save", FontAwesome.SAVE);
@@ -47,7 +47,7 @@ public class CustomerEditor extends VerticalLayout {
 	public CustomerEditor(CustomerRepository repository) {
 		this.repository = repository;
 
-		addComponents(firstName, lastName, actions);
+		addComponents(id, firstName, lastName, actions);
 
 		// Configure and style components
 		setSpacing(true);
@@ -82,6 +82,9 @@ public class CustomerEditor extends VerticalLayout {
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
 		BeanFieldGroup.bindFieldsUnbuffered(customer, this);
+//		firstName.setValue(customer.getFirstName());
+//		lastName.setValue(customer.getLastName());
+//		id.setValue(String.format("%04d", customer.getId()));
 
 		setVisible(true);
 
