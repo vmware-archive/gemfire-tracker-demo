@@ -8,7 +8,7 @@
 		http://www.springframework.org/schema/gemfire http://www.springframework.org/schema/gemfire/spring-gemfire-1.7.xsd
 		http://www.springframework.org/schema/data/gemfire http://www.springframework.org/schema/data/gemfire/spring-data-gemfire-1.7.xsd">
 
-	<context:component-scan base-package="hello"/>
+	<context:component-scan base-package="io.pivotal.pde.demo.tracker.gemfire"/>
 
 	<gfe:client-cache pdx-serializer-ref="pdxSerializer" 
 		pool-name="pool" />
@@ -18,13 +18,15 @@
 	</gfe:pool>
 
 	<gfe:client-region id="customerRegion" name="Customer" shortcut="PROXY" pool-name="pool" ignore-jta="true" />
+	
+	<gfe:client-region id="checkInRegion" name="CheckIn" shortcut="PROXY" pool-name="pool" ignore-jta="true" />
 
 	<bean id="pdxSerializer" class="com.gemstone.gemfire.pdx.ReflectionBasedAutoSerializer">
 		<constructor-arg>
-			<value>hello.*</value>
+			<value>io.pivotal.pde.demo.tracker.gemfire.*</value>
 		</constructor-arg>
 	</bean>
 
-	<gfe-data:repositories base-package="hello" />
+	<gfe-data:repositories base-package="io.pivotal.pde.demo.tracker.gemfire" />
 	
 </beans>

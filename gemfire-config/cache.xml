@@ -22,7 +22,7 @@
 		</pdx-serializer>
 	</pdx>
 
-	<region name="PackageLocation">
+	<region name="CheckIn">
 		<region-attributes refid="PARTITION_REDUNDANT_PERSISTENT_OVERFLOW" disk-store-name="data_store" >
 			<eviction-attributes>
 				<lru-heap-percentage action="overflow-to-disk"/>
@@ -30,13 +30,6 @@
 		</region-attributes>
 	</region>
 
-	<region name="Customer">
-		<region-attributes refid="PARTITION_REDUNDANT_PERSISTENT_OVERFLOW" disk-store-name="data_store" >
-			<eviction-attributes>
-				<lru-heap-percentage action="overflow-to-disk"/>
-			</eviction-attributes>
-		</region-attributes>
-	</region>
 	
 	<resource-manager critical-heap-percentage="95" eviction-heap-percentage="90"/>
 </cache>

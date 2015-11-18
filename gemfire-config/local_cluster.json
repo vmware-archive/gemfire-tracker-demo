@@ -12,12 +12,14 @@
         "jmx-manager-port" : 11099,
         "http-service-bind-address" : "en0",
         "http-service-port" : 17070,
+        "enable-configuration-service" : false,
         "jvm-options" : ["-Xmx1g","-Xms1g", "-XX:+UseConcMarkSweepGC"]
     },
    "datanode-properties" : {
         "bind-address" : "en0",
         "server-bind-address" : "en0",
         "conserve-sockets" : false,
+        "use-configuration-service" : false,
         "jvm-options" : ["-Xmx3g","-Xms3g","-Xmn1g", "-XX:+UseConcMarkSweepGC", "-XX:+UseParNewGC"],
         "cache-xml-file" : "/Users/rmay/tracker-gemfire-demo/gemfire-config/cache.xml"
     },
