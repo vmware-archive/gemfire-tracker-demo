@@ -1,6 +1,5 @@
 package io.pivotal.pde.demo.tracker.gemfire;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
@@ -18,8 +17,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 @Theme("valo")
-@Push
-public class TrackerUI extends UI {
+public class TrackerUI extends UI implements CheckInCacheListener.ChangeHandler {
 
 	private CheckInRepository repo;
 
@@ -30,6 +28,7 @@ public class TrackerUI extends UI {
 	private TextField filter;
 
 	private Button addNewBtn;
+	
 
 	public TrackerUI() {
 	}
@@ -55,7 +54,7 @@ public class TrackerUI extends UI {
 		mainLayout.setMargin(true);
 		mainLayout.setSpacing(true);
 
-		grid.setHeight(300, Unit.PIXELS);
+		grid.setHeight(600, Unit.PIXELS);
 		grid.setColumns("plate", "city", "timestamp");
 
 		filter.setInputPrompt("Filter by License Plate");
@@ -79,11 +78,21 @@ public class TrackerUI extends UI {
 
 		});
 
+		CheckInCacheListener changeListener = ctx.getBean(CheckInCacheListener.class);
+		changeListener.setHandler(this);
+
+		this.setPollInterval(5000);
+		
 		// Initialize listing
 		listCheckIns(null);
 	}
 
-	private void listCheckIns(String text) {
+	public void itemAdded() {
+		// just re-draw the list
+		listCheckIns(filter.getValue());
+	}
+
+	private synchronized void listCheckIns(String text) {
 		if (StringUtils.isEmpty(text)) {
 			BeanItemContainer<CheckIn> bic = new BeanItemContainer<CheckIn>(CheckIn.class);
 			for (CheckIn c : repo.findAll())

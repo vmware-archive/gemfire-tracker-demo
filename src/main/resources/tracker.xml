@@ -13,13 +13,13 @@
 	<gfe:client-cache pdx-serializer-ref="pdxSerializer" 
 		pool-name="pool" />
 
-	<gfe:pool id="pool">
+	<gfe:pool id="pool" subscription-enabled="true" subscription-redundancy="2">
 		<gfe:locator host="Randy-May-MacBook-Pro.local" port="10000" />
 	</gfe:pool>
 
-	<gfe:client-region id="customerRegion" name="Customer" shortcut="PROXY" pool-name="pool" ignore-jta="true" />
-	
-	<gfe:client-region id="checkInRegion" name="CheckIn" shortcut="PROXY" pool-name="pool" ignore-jta="true" />
+	<gfe:client-region id="checkInRegion" name="CheckIn" shortcut="PROXY" pool-name="pool" ignore-jta="true" >
+<!-- 		<gfe:cache-listener ref="checkInCacheListener"/> -->
+	</gfe:client-region>
 
 	<bean id="pdxSerializer" class="com.gemstone.gemfire.pdx.ReflectionBasedAutoSerializer">
 		<constructor-arg>
@@ -28,5 +28,7 @@
 	</bean>
 
 	<gfe-data:repositories base-package="io.pivotal.pde.demo.tracker.gemfire" />
+	
+	<bean id="checkInCacheListener" class="io.pivotal.pde.demo.tracker.gemfire.CheckInCacheListener"/>
 	
 </beans>
