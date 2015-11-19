@@ -81,5 +81,10 @@ public class CheckIn {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return "CheckIn [plate=" + plate + ", city=" + city + ", timestamp=" + timestamp + "]";
+	}
+	
 	
 }

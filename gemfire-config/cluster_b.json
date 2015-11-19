@@ -1,0 +1,49 @@
+{
+    "global-properties":{
+        "gemfire": "/Users/rmay/Pivotal/software/Pivotal_GemFire_810_b50625_Linux",
+        "java-home" : "/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home",
+        "locators" : "Randy-May-MacBook-Pro.local[20000]",
+        "cluster-home" : "/Users/rmay/tracker-gemfire-demo/gemfire-cluster-b",
+        "distributed-system-id": 2,
+        "remote-locators" : "Randy-May-MacBook-Pro.local[10000]"
+    },
+   "locator-properties" : {
+        "bind-address": "en0", 
+        "port" : 20000,
+        "jmx-manager-bind-address" : "en0",
+        "jmx-manager-port" : 21099,
+        "http-service-bind-address" : "en0",
+        "http-service-port" : 27070,
+        "enable-configuration-service" : false,
+        "jvm-options" : ["-Xmx1g","-Xms1g", "-XX:+UseConcMarkSweepGC"]
+    },
+   "datanode-properties" : {
+        "bind-address" : "en0",
+        "server-bind-address" : "en0",
+        "conserve-sockets" : false,
+        "use-configuration-service" : false,
+        "jvm-options" : ["-Xmx2g","-Xms2g","-Xmn256m", "-XX:+UseConcMarkSweepGC", "-XX:+UseParNewGC"],
+        "cache-xml-file" : "/Users/rmay/tracker-gemfire-demo/gemfire-config/cache.xml",
+        "REMOTE_DISTRIBUTED_SYSTEM_ID": 1,
+        "GATEWAY_RECEIVER_BIND_ADDRESS" : "en0",
+        "GATEWAY_RECEIVER_START_PORT" : 22101,
+        "GATEWAY_RECEIVER_END_PORT" : 22199,
+        "log-file" : "server.log"
+    },
+    "hosts": { 
+        "Randy-May-MacBook-Pro.local" : {  
+            "host-properties" :  {
+             },
+            "processes" :  {  
+                "locator" : {
+                      "type" : "locator"
+                 },
+                 "server1" : {
+                    "type" : "datanode",
+                    "server-port" : 20100
+                 }
+            }
+        }
+   }
+}
+

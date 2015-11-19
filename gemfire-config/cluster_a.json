@@ -3,7 +3,9 @@
         "gemfire": "/Users/rmay/Pivotal/software/Pivotal_GemFire_810_b50625_Linux",
         "java-home" : "/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home",
         "locators" : "Randy-May-MacBook-Pro.local[10000]",
-        "cluster-home" : "/Users/rmay/tracker-gemfire-demo/gemfire-cluster"
+        "cluster-home" : "/Users/rmay/tracker-gemfire-demo/gemfire-cluster-a",
+        "distributed-system-id": 1,
+        "remote-locators" : "Randy-May-MacBook-Pro.local[20000]"
     },
    "locator-properties" : {
         "bind-address": "en0", 
@@ -20,8 +22,13 @@
         "server-bind-address" : "en0",
         "conserve-sockets" : false,
         "use-configuration-service" : false,
-        "jvm-options" : ["-Xmx3g","-Xms3g","-Xmn1g", "-XX:+UseConcMarkSweepGC", "-XX:+UseParNewGC"],
-        "cache-xml-file" : "/Users/rmay/tracker-gemfire-demo/gemfire-config/cache.xml"
+        "jvm-options" : ["-Xmx2g","-Xms2g","-Xmn256m", "-XX:+UseConcMarkSweepGC", "-XX:+UseParNewGC"],
+        "cache-xml-file" : "/Users/rmay/tracker-gemfire-demo/gemfire-config/cache.xml",
+        "REMOTE_DISTRIBUTED_SYSTEM_ID": 2,
+        "GATEWAY_RECEIVER_BIND_ADDRESS" : "en0",
+        "GATEWAY_RECEIVER_START_PORT" : 12101,
+        "GATEWAY_RECEIVER_END_PORT" : 12199,
+        "log-file" : "server.log"
     },
     "hosts": { 
         "Randy-May-MacBook-Pro.local" : {  

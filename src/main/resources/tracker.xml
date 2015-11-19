@@ -18,7 +18,7 @@
 	</gfe:pool>
 
 	<gfe:client-region id="checkInRegion" name="CheckIn" shortcut="PROXY" pool-name="pool" ignore-jta="true" >
-<!-- 		<gfe:cache-listener ref="checkInCacheListener"/> -->
+		<gfe:cache-listener ref="checkInCacheListener"/>
 	</gfe:client-region>
 
 	<bean id="pdxSerializer" class="com.gemstone.gemfire.pdx.ReflectionBasedAutoSerializer">

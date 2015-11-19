@@ -8,7 +8,7 @@ import com.gemstone.gemfire.cache.RegionEvent;
 public class CheckInCacheListener implements CacheListener<String, CheckIn> {
 
 	public static interface ChangeHandler {
-		public void itemAdded();
+		public void itemAdded(CheckIn newItem);
 	}
 	
 	private ChangeHandler changeHandler;
@@ -23,7 +23,7 @@ public class CheckInCacheListener implements CacheListener<String, CheckIn> {
 
 	@Override
 	public void afterCreate(EntryEvent<String, CheckIn> event) {
-		if (changeHandler != null) changeHandler.itemAdded();
+		if (changeHandler != null) changeHandler.itemAdded(event.getNewValue());
 	}
 
 	@Override

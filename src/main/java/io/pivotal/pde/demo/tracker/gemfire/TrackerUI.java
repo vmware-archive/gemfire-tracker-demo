@@ -3,7 +3,6 @@ package io.pivotal.pde.demo.tracker.gemfire;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
-import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.FontAwesome;
@@ -28,7 +27,6 @@ public class TrackerUI extends UI implements CheckInCacheListener.ChangeHandler 
 	private TextField filter;
 
 	private Button addNewBtn;
-	
 
 	public TrackerUI() {
 	}
@@ -54,15 +52,17 @@ public class TrackerUI extends UI implements CheckInCacheListener.ChangeHandler 
 		mainLayout.setMargin(true);
 		mainLayout.setSpacing(true);
 
-		grid.setHeight(600, Unit.PIXELS);
+		grid.setHeight(300, Unit.PIXELS);
+		grid.setWidth(500, Unit.PIXELS);
 		grid.setColumns("plate", "city", "timestamp");
+		grid.setContainerDataSource(new BeanItemContainer<CheckIn>(CheckIn.class));
 
 		filter.setInputPrompt("Filter by License Plate");
 
 		// Hook logic to components
 
 		// Replace listing with filtered content when user changes filter
-		filter.addTextChangeListener(e -> listCheckIns(e.getText()));
+		filter.addTextChangeListener(e -> refillGrid(e.getText()));
 
 		// Show the form when new button is clicked
 		addNewBtn.addClickListener(e -> editor.newCheckIn());
@@ -73,7 +73,7 @@ public class TrackerUI extends UI implements CheckInCacheListener.ChangeHandler 
 			@Override
 			public void onChange() {
 				editor.setVisible(false);
-				listCheckIns(filter.getValue());
+				refillGrid(filter.getValue());
 			}
 
 		});
@@ -82,25 +82,43 @@ public class TrackerUI extends UI implements CheckInCacheListener.ChangeHandler 
 		changeListener.setHandler(this);
 
 		this.setPollInterval(5000);
-		
+
 		// Initialize listing
-		listCheckIns(null);
+		refillGrid(null);
 	}
 
-	public void itemAdded() {
-		// just re-draw the list
-		listCheckIns(filter.getValue());
+	public void itemAdded(CheckIn newItem) {
+		synchronized(grid){
+			//System.out.println("HANDLING ADD ITEM: " + newItem);
+			BeanItemContainer<CheckIn> bic = (BeanItemContainer<CheckIn>) grid.getContainerDataSource();
+			String filterVal = filter.getValue();
+			//System.out.println("FILTER is " + filterVal);
+			if (StringUtils.isEmpty(filterVal)){
+				if (!newItem.getPlate().toLowerCase().startsWith(filterVal)){
+					//System.out.println("NEW ITEM DOES NOT MATCH FILTER - WERE DONE HERE");
+				}
+			}
+			
+			// does it respect sort ?
+			bic.addBean(newItem);
+			//System.out.println("ADDED NEW ITEM TO GRID");
+		}
 	}
 
-	private synchronized void listCheckIns(String text) {
-		if (StringUtils.isEmpty(text)) {
-			BeanItemContainer<CheckIn> bic = new BeanItemContainer<CheckIn>(CheckIn.class);
-			for (CheckIn c : repo.findAll())
-				bic.addBean(c);
-			grid.setContainerDataSource(bic);
-		} else {
-			grid.setContainerDataSource(
-					new BeanItemContainer<CheckIn>(CheckIn.class, repo.findByPlateStartsWithIgnoreCase(text)));
+	private void refillGrid(String text) {
+		synchronized (grid) {
+			BeanItemContainer<CheckIn> bic = (BeanItemContainer<CheckIn>) grid.getContainerDataSource();
+			bic.removeAllItems();
+
+			if (StringUtils.isEmpty(text)) {
+				for (CheckIn c : repo.findAll()) {
+					bic.addBean(c);
+				}
+			} else {
+				for (CheckIn c : repo.findByPlateStartsWithIgnoreCase(text)) {
+					bic.addBean(c);
+				}
+			}
 		}
 	}
 
