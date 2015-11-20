@@ -9,12 +9,13 @@
 		http://www.springframework.org/schema/data/gemfire http://www.springframework.org/schema/data/gemfire/spring-data-gemfire-1.7.xsd">
 
 	<context:component-scan base-package="io.pivotal.pde.demo.tracker.gemfire"/>
-
+	<context:property-placeholder location="file:tracker.properties"/>
+		
 	<gfe:client-cache pdx-serializer-ref="pdxSerializer" 
 		pool-name="pool" />
 
 	<gfe:pool id="pool" subscription-enabled="true" subscription-redundancy="2">
-		<gfe:locator host="Randy-May-MacBook-Pro.local" port="10000" />
+		<gfe:locator host="${locator.host}" port="${locator.port}" />
 	</gfe:pool>
 
 	<gfe:client-region id="checkInRegion" name="CheckIn" shortcut="PROXY" pool-name="pool" ignore-jta="true" >

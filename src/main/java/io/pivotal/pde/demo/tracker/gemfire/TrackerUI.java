@@ -1,13 +1,18 @@
 package io.pivotal.pde.demo.tracker.gemfire;
 
+import java.util.List;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
+import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
@@ -16,6 +21,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 @Theme("valo")
+@Push
 public class TrackerUI extends UI implements CheckInCacheListener.ChangeHandler {
 
 	private CheckInRepository repo;
@@ -53,7 +59,7 @@ public class TrackerUI extends UI implements CheckInCacheListener.ChangeHandler 
 		mainLayout.setSpacing(true);
 
 		grid.setHeight(300, Unit.PIXELS);
-		grid.setWidth(500, Unit.PIXELS);
+		grid.setWidth(550, Unit.PIXELS);
 		grid.setColumns("plate", "city", "timestamp");
 		grid.setContainerDataSource(new BeanItemContainer<CheckIn>(CheckIn.class));
 
@@ -81,45 +87,50 @@ public class TrackerUI extends UI implements CheckInCacheListener.ChangeHandler 
 		CheckInCacheListener changeListener = ctx.getBean(CheckInCacheListener.class);
 		changeListener.setHandler(this);
 
-		this.setPollInterval(5000);
+		// this.setPollInterval(5000);
 
 		// Initialize listing
 		refillGrid(null);
 	}
 
+	// public void itemAdded(CheckIn newItem) {
+	// access(() -> {
+	// BeanItemContainer<CheckIn> bic = (BeanItemContainer<CheckIn>)
+	// grid.getContainerDataSource();
+	// String filterVal = filter.getValue();
+	//
+	// if (StringUtils.isEmpty(filterVal)) {
+	// if (!newItem.getPlate().toLowerCase().startsWith(filterVal)) {
+	// return;
+	// }
+	// }
+	//
+	// bic.addBean(newItem);
+	//
+	// });
+	// }
+
 	public void itemAdded(CheckIn newItem) {
-		synchronized(grid){
-			//System.out.println("HANDLING ADD ITEM: " + newItem);
-			BeanItemContainer<CheckIn> bic = (BeanItemContainer<CheckIn>) grid.getContainerDataSource();
-			String filterVal = filter.getValue();
-			//System.out.println("FILTER is " + filterVal);
-			if (StringUtils.isEmpty(filterVal)){
-				if (!newItem.getPlate().toLowerCase().startsWith(filterVal)){
-					//System.out.println("NEW ITEM DOES NOT MATCH FILTER - WERE DONE HERE");
-				}
-			}
-			
-			// does it respect sort ?
-			bic.addBean(newItem);
-			//System.out.println("ADDED NEW ITEM TO GRID");
-		}
+		access(() -> {
+			refillGrid(filter.getValue());
+		});
 	}
 
 	private void refillGrid(String text) {
-		synchronized (grid) {
-			BeanItemContainer<CheckIn> bic = (BeanItemContainer<CheckIn>) grid.getContainerDataSource();
-			bic.removeAllItems();
+		BeanItemContainer<CheckIn> bic = (BeanItemContainer<CheckIn>) grid.getContainerDataSource();
+		bic.removeAllItems();
 
-			if (StringUtils.isEmpty(text)) {
-				for (CheckIn c : repo.findAll()) {
-					bic.addBean(c);
-				}
-			} else {
-				for (CheckIn c : repo.findByPlateStartsWithIgnoreCase(text)) {
-					bic.addBean(c);
-				}
+		if (StringUtils.isEmpty(text)) {
+			for (CheckIn c : repo.findAll()) {
+				bic.addBean(c);
+			}
+		} else {
+			for (CheckIn c : repo.findByPlateStartsWithIgnoreCase(text)) {
+				bic.addBean(c);
 			}
 		}
+		
+		grid.sort("timestamp",SortDirection.DESCENDING);
 	}
 
 }
